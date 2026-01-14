@@ -18,9 +18,8 @@ export const goodsFromServer = [
 
   const SORT_BY_ALFABETI = 'alphabetically';
   const SORT_BY_LENGTH = 'length';
-  const SORT_BY_REVERSE = 'Reverse';
 
-function getGoods (sortField, goodsFromServer, isReverse){
+function getGoods (sortField, goodsFromServer){
     let goods = [...goodsFromServer];
     let visibleGoods = goods.toSorted((good1, good2) => {
       switch (sortField) {
@@ -60,13 +59,13 @@ export const App = () => {
         Sort by length
       </button>
 
-      <button onClick={() =>  setSortReverse(prev => !prev)} type="button" className={`button is-warning ${sortReverse === false?'':'is-light'}`}>
+      <button onClick={() =>  setSortReverse(prev => !prev)} type="button" className={`button is-warning ${sortReverse === true?'':'is-light'}`}>
         Reverse
       </button>
 
-      <button onClick={() =>setSortField("")} type="button" className="button is-danger is-light">
+      {sortField === ''?<button onClick={() =>{setSortField(""); setSortReverse(false)}} type="button" className="button is-danger is-light">
         Reset
-      </button>
+      </button>:''}
     </div>
 
     <ul>
