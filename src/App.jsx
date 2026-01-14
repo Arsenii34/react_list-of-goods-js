@@ -1,7 +1,7 @@
 import 'bulma/css/bulma.css';
 import './App.scss';
 import { useState } from 'react';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 
 export const goodsFromServer = [
   'Dumplings',
@@ -16,14 +16,13 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
-  let SORT_BY_ALFABETI = 'alphabetically';
-  let SORT_BY_LENGTH = 'length';
-  let SORT_BY_REVERSE = 'Reverse';
+  const SORT_BY_ALFABETI = 'alphabetically';
+  const SORT_BY_LENGTH = 'length';
+  const SORT_BY_REVERSE = 'Reverse';
 
-function getGoods (sortField, [...goodsFromServer]){
+function getGoods (sortField, goodsFromServer, isReverse){
     let goods = [...goodsFromServer];
-
-    const visibleGoods = goods.toSorted((good1, good2) => {
+    let visibleGoods = goods.toSorted((good1, good2) => {
       switch (sortField) {
         case SORT_BY_ALFABETI:
           return good1.localeCompare(good2);
@@ -32,13 +31,23 @@ function getGoods (sortField, [...goodsFromServer]){
         default : return 0;
       }
     })
-    sortField === SORT_BY_REVERSE?visibleGoods.reverse():'';
     return visibleGoods;
   }
+function reverse (sortReverse,visibleGoods){
+  if(sortReverse){
+    let result = [...visibleGoods].reverse();
+    return result;
+  }
+  else{
+    return visibleGoods;
+  }
+}
 
 export const App = () => {
   const [sortField, setSortField] = useState('');
-  const videlGoods = getGoods(sortField, [...goodsFromServer]);
+  const [sortReverse, setSortReverse] = useState(false)
+  let videlGoods = getGoods(sortField, [...goodsFromServer]);
+  let finalyGoods = reverse(sortReverse,videlGoods);
   return (
 
   <div className="section content">
@@ -51,7 +60,7 @@ export const App = () => {
         Sort by length
       </button>
 
-      <button onClick={() =>  setSortField(SORT_BY_REVERSE)} type="button" className={`button is-warning ${sortField === SORT_BY_REVERSE?'':'is-light'}`}>
+      <button onClick={() =>  setSortReverse(prev => !prev)} type="button" className={`button is-warning ${sortReverse === false?'':'is-light'}`}>
         Reverse
       </button>
 
@@ -61,12 +70,9 @@ export const App = () => {
     </div>
 
     <ul>
-      <li data-cy="Good">Dumplings</li>
-      <li data-cy="Good">Carrot</li>
-      <li data-cy="Good">Eggs</li>
-      <li data-cy="Good">Ice cream</li>
-      <li data-cy="Good">Apple</li>
-      <li data-cy="Good">...</li>
+      {finalyGoods.map((object, index) => (
+        <li key = {index} data-cy="Good">{object}</li>
+      ))}
     </ul>
   </div>)
 };
